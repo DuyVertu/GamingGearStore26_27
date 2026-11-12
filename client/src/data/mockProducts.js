@@ -1,0 +1,158 @@
+export const mockProducts = [
+  {
+    _id: 'prod-mouse-01',
+    name: 'Chuột Logitech G Pro X Superlight 2 Wireless',
+    brand: 'Logitech',
+    category: 'Chuột',
+    price: 3290000,
+    originalPrice: 3890000,
+    stock: 15,
+    images: [
+      'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=800&q=80',
+    ],
+    specs: {
+      switchType: 'Lightforce Hybrid Optical',
+      sensor: 'HERO 2',
+      dpi: '32,000 DPI',
+      pollingRate: '4000Hz',
+      connection: 'Lightspeed Wireless / Type-C',
+    },
+  },
+  {
+    _id: 'prod-mouse-02',
+    name: 'Chuột Razer DeathAdder V3 Pro Faker Edition',
+    brand: 'Razer',
+    category: 'Chuột',
+    price: 3690000,
+    originalPrice: 4390000,
+    stock: 8,
+    images: [
+      'https://images.unsplash.com/photo-1527814050087-3793815479db?auto=format&fit=crop&w=800&q=80',
+    ],
+    specs: {
+      switchType: 'Razer Optical Gen-3',
+      sensor: 'Focus Pro 30K',
+      dpi: '30,000 DPI',
+      pollingRate: '4000Hz',
+      connection: 'HyperSpeed Wireless / Type-C',
+    },
+  },
+  {
+    _id: 'prod-kb-01',
+    name: 'Bàn phím cơ Wooting 60HE+ Magnetic Switch',
+    brand: 'Wooting',
+    category: 'Bàn phím',
+    price: 5490000,
+    originalPrice: 5990000,
+    stock: 0, // Test hết hàng (Out of stock)
+    images: [
+      'https://images.unsplash.com/photo-1595225476474-87563907a212?auto=format&fit=crop&w=800&q=80',
+    ],
+    specs: {
+      switchType: 'Lekker Linear60 (Rapid Trigger)',
+      sensor: 'Hall Effect Magnetic',
+      dpi: 'N/A (0.1mm Actuation)',
+      pollingRate: '1000Hz',
+      connection: 'USB Type-C Detachable',
+    },
+  },
+  {
+    _id: 'prod-kb-02',
+    name: 'Bàn phím cơ ASUS ROG Azoth 75% Wireless OLED',
+    brand: 'ASUS',
+    category: 'Bàn phím',
+    price: 5890000,
+    originalPrice: 6990000,
+    stock: 6,
+    images: [
+      'https://images.unsplash.com/photo-1587829741301-dc798b83add3?auto=format&fit=crop&w=800&q=80',
+    ],
+    specs: {
+      switchType: 'ROG NX Snow Linear (Hot-swap)',
+      sensor: 'N/A',
+      dpi: 'N/A',
+      pollingRate: '1000Hz',
+      connection: 'Tri-mode (2.4GHz / Bluetooth / Wired)',
+    },
+  },
+  {
+    _id: 'prod-kb-03',
+    name: 'Bàn phím cơ Akko MOD007B HE PC Tokyo',
+    brand: 'Akko',
+    category: 'Bàn phím',
+    price: 3190000,
+    originalPrice: 3590000,
+    stock: 12,
+    images: [
+      'https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?auto=format&fit=crop&w=800&q=80',
+    ],
+    specs: {
+      switchType: 'Kailh Sakura Pink Magnetic',
+      sensor: 'Hall Effect Sensor',
+      dpi: 'N/A',
+      pollingRate: '8000Hz (Wired)',
+      connection: 'Tri-mode (2.4GHz / Bluetooth / Type-C)',
+    },
+  },
+  {
+    _id: 'prod-hs-01',
+    name: 'Tai nghe HyperX Cloud III Wireless Gaming',
+    brand: 'HyperX',
+    category: 'Tai nghe',
+    price: 3490000,
+    originalPrice: 3990000,
+    stock: 20,
+    images: [
+      'https://images.unsplash.com/photo-1599669454699-248893623440?auto=format&fit=crop&w=800&q=80',
+    ],
+    specs: {
+      switchType: 'Tactile Mute Mic Control',
+      sensor: 'Driver 53mm Angled DTS:X',
+      dpi: '10Hz - 21kHz',
+      pollingRate: '1000Hz Low-Latency',
+      connection: '2.4GHz Wireless USB-C / USB-A',
+    },
+  },
+  {
+    _id: 'prod-hs-02',
+    name: 'Tai nghe Razer BlackShark V2 Pro 2023 Edition',
+    brand: 'Razer',
+    category: 'Tai nghe',
+    price: 4290000,
+    originalPrice: 4890000,
+    stock: 10,
+    images: [
+      'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=800&q=80',
+    ],
+    specs: {
+      switchType: 'SmartSwitch Dual Wireless Button',
+      sensor: 'TriForce Titanium 50mm',
+      dpi: '12Hz - 28kHz',
+      pollingRate: '1000Hz HyperSpeed',
+      connection: '2.4GHz Wireless / Bluetooth 5.2',
+    },
+  },
+  {
+    _id: 'prod-pad-01',
+    name: 'Lót chuột Artisan Ninja FX Zero XSoft XL',
+    brand: 'Artisan',
+    category: 'Lót chuột',
+    price: 1650000,
+    originalPrice: 1890000,
+    stock: 25,
+    images: [
+      'https://images.unsplash.com/photo-1629429408209-1f912961dbd8?auto=format&fit=crop&w=800&q=80',
+    ],
+    specs: {
+      switchType: 'Stitched Edge Low-Profile',
+      sensor: 'Circular Knitted Cloth (Control)',
+      dpi: '490 x 420 x 4mm (XL)',
+      pollingRate: '8000Hz Sensor Optimized',
+      connection: 'Poron Anti-Slip Base',
+    },
+  },
+];
+
+export default mockProducts;
+
