@@ -12,3 +12,8 @@
   * In-Stock Status: `#16a34a` (Xanh lá đậm)
   * Transitions: `transition-all duration-200` (150ms-350ms standard) kèm đổ bóng nhẹ `hover:shadow-md hover:-translate-y-0.5`.
 - Product Specs Schema: `{ switchType, sensor, dpi, pollingRate, connection }`.
+
+## STRICT PERFORMANCE & TESTING SLAs (UPDATED)
+- Checkout API (Create Order + Atomic Stock Deduction): Must execute in < 300ms using single-roundtrip `bulkWrite` / atomic `$inc` (`stock >= qty`).
+- Multi-Criteria Filter API (>= 4 filters: brand, price, switchType, sensor, dpi, pollingRate): Must use MongoDB Compound Indexes + `.lean()` to keep DB execution < 50ms and API response < 200ms.
+- Backend Test Coverage (Jest + Supertest): Must achieve >= 70% line coverage across core controllers/services (Auth JWT, Filter, Cart Merge, Checkout Stock Deduction).

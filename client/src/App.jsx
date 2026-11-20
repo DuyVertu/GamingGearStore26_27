@@ -8,6 +8,7 @@ import CatalogPage from './pages/CatalogPage';
 import AuthPage from './pages/AuthPage';
 import CheckoutPage from './pages/CheckoutPage';
 import AdminDashboard from './pages/AdminDashboard';
+import ProductDetailPage from './pages/ProductDetailPage';
 import { mockProducts } from './data/mockProducts';
 import { useStore } from './store/useStore';
 
@@ -96,6 +97,7 @@ const AppLayout = () => {
               />
             }
           />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route
             path="/auth"
             element={

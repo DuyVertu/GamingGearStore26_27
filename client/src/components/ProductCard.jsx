@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Heart, ShoppingCart, CheckCircle2, XCircle } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
@@ -43,14 +44,15 @@ const ProductCard = ({ product, onSelectProduct }) => {
     <div className="group bg-white border border-slate-200 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 flex flex-col overflow-hidden">
       {/* Khung ảnh + Badge giảm giá + Nút Wishlist */}
       <div className="relative aspect-square w-full bg-[#f8fafc] overflow-hidden border-b border-slate-100">
-        <img
-          src={images?.[0] || PLACEHOLDER_IMG}
-          alt={name}
-          onError={handleImageError}
-          onClick={() => onSelectProduct && onSelectProduct(product)}
-          className="w-full h-full object-cover object-center group-hover:scale-105 transition-all duration-200 cursor-pointer"
-          loading="lazy"
-        />
+        <Link to={`/product/${product._id}`} className="block w-full h-full">
+          <img
+            src={images?.[0] || PLACEHOLDER_IMG}
+            alt={name}
+            onError={handleImageError}
+            className="w-full h-full object-cover object-center group-hover:scale-105 transition-all duration-200 cursor-pointer"
+            loading="lazy"
+          />
+        </Link>
 
         {/* Badge % giảm giá màu đỏ */}
         {discountPercent > 0 && (
@@ -96,13 +98,14 @@ const ProductCard = ({ product, onSelectProduct }) => {
           </div>
 
           {/* Tên sản phẩm */}
-          <h3
-            onClick={() => onSelectProduct && onSelectProduct(product)}
-            className="text-sm font-semibold text-slate-900 line-clamp-2 min-h-[2.5rem] hover:text-rose-600 transition-all duration-200 cursor-pointer"
-            title={name}
-          >
-            {name}
-          </h3>
+          <Link to={`/product/${product._id}`} className="block">
+            <h3
+              className="text-sm font-semibold text-slate-900 line-clamp-2 min-h-[2.5rem] hover:text-rose-600 transition-all duration-200 cursor-pointer"
+              title={name}
+            >
+              {name}
+            </h3>
+          </Link>
 
           {/* Cụm tag thông số kỹ thuật màu xanh dương nhạt */}
           <div className="flex flex-wrap gap-1.5 mt-2">
