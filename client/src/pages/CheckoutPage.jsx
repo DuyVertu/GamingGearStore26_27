@@ -7,7 +7,7 @@ const QR_SAMPLE = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data
 const formatVND = (val) => new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val || 0);
 
 const CheckoutPage = ({ onNavigateAuth, onOrderCreated }) => {
-  const { cart, user, updateCartQty, removeFromCart, clearCart } = useStore();
+  const { cart, user, updateCartQty, removeFromCart, clearCart, createOrder } = useStore();
   const [shipping, setShipping] = useState({ fullName: user?.name || '', phone: '', address: '' });
   const [paymentMethod, setPaymentMethod] = useState('COD');
   const [authPrompt, setAuthPrompt] = useState(false);
@@ -26,23 +26,13 @@ const CheckoutPage = ({ onNavigateAuth, onOrderCreated }) => {
     }
     if (cart.length === 0) return;
 
-    const updatedStockItems = cart.map((item) => ({ ...item, stock: Math.max(0, (item.stock || 0) - (item.qty || 1)) }));
-    const newOrder = {
-      _id: `ORD-${Date.now().toString().slice(-6)}`,
-      user: { _id: user._id, name: user.name, role: user.role },
-      items: updatedStockItems,
+    const newOrder = createOrder({
+      items: cart,
       shippingAddress: shipping,
       paymentMethod,
       totalAmount,
-      status: 'Pending',
-      createdAt: new Date().toISOString(),
-    };
-    try {
-      const saved = JSON.parse(localStorage.getItem('gaminggear-orders') || '[]');
-      localStorage.setItem('gaminggear-orders', JSON.stringify([newOrder, ...saved]));
-    } catch {}
+    });
     setCreatedOrder(newOrder);
-    clearCart();
     if (onOrderCreated) onOrderCreated(newOrder);
   };
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { BarChart3, Package, ShoppingCart, Users, Plus, Edit3, Trash2, Lock, Unlock, ShieldAlert, X } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
@@ -14,12 +14,6 @@ const REVENUE_DATA = [
   { month: 'T10', revenue: 89000000 }, { month: 'T11', revenue: 112000000 },
 ];
 
-const INITIAL_ORDERS = [
-  { _id: 'ORD-882910', customer: 'Nguyễn Văn Gamer', totalAmount: 6980000, status: 'Pending', paymentMethod: 'COD', createdAt: '2026-11-12' },
-  { _id: 'ORD-882911', customer: 'Trần Hoàng Pro', totalAmount: 5490000, status: 'Processing', paymentMethod: 'BANK', createdAt: '2026-11-11' },
-  { _id: 'ORD-882912', customer: 'Lê Minh Esports', totalAmount: 3290000, status: 'Completed', paymentMethod: 'BANK', createdAt: '2026-11-10' },
-];
-
 const INITIAL_USERS = [
   { _id: 'usr_01', name: 'Nguyễn Văn Gamer', email: 'customer@gaminggear.vn', role: 'Customer', locked: false },
   { _id: 'usr_02', name: 'Trần Hoàng Pro', email: 'hoangpro@gaminggear.vn', role: 'Customer', locked: false },
@@ -33,26 +27,16 @@ const EMPTY_FORM = {
 };
 
 const AdminDashboard = ({ products: propProducts, setProducts: propSetProducts }) => {
-  const { user } = useStore();
+  const { user, orders, updateOrderStatus } = useStore();
   const [tab, setTab] = useState('stats');
   const [localProducts, setLocalProducts] = useState(mockProducts);
   const products = propProducts || localProducts;
   const setProducts = propSetProducts || setLocalProducts;
 
-  const [orders, setOrders] = useState(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('gaminggear-orders') || '[]');
-      return saved.length ? saved : INITIAL_ORDERS;
-    } catch { return INITIAL_ORDERS; }
-  });
   const [customers, setCustomers] = useState(INITIAL_USERS);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [form, setForm] = useState(EMPTY_FORM);
-
-  useEffect(() => {
-    try { localStorage.setItem('gaminggear-orders', JSON.stringify(orders)); } catch {}
-  }, [orders]);
 
   if (!user || user.role !== 'Owner') return <Navigate to="/" replace />;
 
@@ -186,7 +170,7 @@ const AdminDashboard = ({ products: propProducts, setProducts: propSetProducts }
                     <td className="p-3"><span className="px-2 py-0.5 rounded bg-blue-50 text-blue-600 font-semibold">{o.paymentMethod}</span></td>
                     <td className="p-3 font-bold text-rose-600">{formatVND(o.totalAmount)}</td>
                     <td className="p-3">
-                      <select value={o.status} onChange={(e) => setOrders((prev) => prev.map((x) => (x._id === o._id ? { ...x, status: e.target.value } : x)))} className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-[#f8fafc] font-bold text-slate-800 focus:outline-none focus:border-rose-600">
+                      <select value={o.status} onChange={(e) => updateOrderStatus(o._id, e.target.value)} className="px-2.5 py-1.5 rounded-lg border border-slate-200 bg-[#f8fafc] font-bold text-slate-800 focus:outline-none focus:border-rose-600">
                         {['Pending', 'Processing', 'Completed', 'Cancelled'].map((st) => <option key={st} value={st}>{st}</option>)}
                       </select>
                     </td>

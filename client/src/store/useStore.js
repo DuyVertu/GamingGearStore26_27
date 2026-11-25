@@ -1,9 +1,12 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import { mockProducts } from '../data/mockProducts';
 
 const CART_KEY = 'gaminggear-cart';
 const WISHLIST_KEY = 'gaminggear-wishlist';
 const AUTH_KEY = 'gaminggear-auth';
+const ORDERS_KEY = 'gaminggear-orders';
+const PRODUCTS_KEY = 'gaminggear-products';
 
 const multiKeyStorage = {
   getItem: (name) => {
@@ -11,14 +14,24 @@ const multiKeyStorage = {
       const cart = JSON.parse(localStorage.getItem(CART_KEY) || '[]');
       const wishlist = JSON.parse(localStorage.getItem(WISHLIST_KEY) || '[]');
       const auth = JSON.parse(localStorage.getItem(AUTH_KEY) || '{"user":null,"token":null}');
+      const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+      const productsRaw = localStorage.getItem(PRODUCTS_KEY);
+      const products = productsRaw ? JSON.parse(productsRaw) : null;
       const raw = localStorage.getItem(name);
       const base = raw ? JSON.parse(raw) : { state: {}, version: 0 };
       return JSON.stringify({
         ...base,
         state: {
           ...base.state,
+          products:
+            Array.isArray(products) && products.length
+              ? products
+              : base.state?.products?.length
+                ? base.state.products
+                : mockProducts,
           cart: Array.isArray(cart) ? cart : base.state?.cart || [],
           wishlist: Array.isArray(wishlist) ? wishlist : base.state?.wishlist || [],
+          orders: Array.isArray(orders) ? orders : base.state?.orders || [],
           user: auth?.user ?? base.state?.user ?? null,
           token: auth?.token ?? base.state?.token ?? null,
         },
@@ -32,8 +45,10 @@ const multiKeyStorage = {
       localStorage.setItem(name, value);
       const parsed = JSON.parse(value);
       const state = parsed?.state || {};
+      localStorage.setItem(PRODUCTS_KEY, JSON.stringify(state.products || mockProducts));
       localStorage.setItem(CART_KEY, JSON.stringify(state.cart || []));
       localStorage.setItem(WISHLIST_KEY, JSON.stringify(state.wishlist || []));
+      localStorage.setItem(ORDERS_KEY, JSON.stringify(state.orders || []));
       localStorage.setItem(
         AUTH_KEY,
         JSON.stringify({ user: state.user || null, token: state.token || null })
@@ -44,8 +59,10 @@ const multiKeyStorage = {
   },
   removeItem: (name) => {
     localStorage.removeItem(name);
+    localStorage.removeItem(PRODUCTS_KEY);
     localStorage.removeItem(CART_KEY);
     localStorage.removeItem(WISHLIST_KEY);
+    localStorage.removeItem(ORDERS_KEY);
     localStorage.removeItem(AUTH_KEY);
   },
 };
@@ -53,8 +70,10 @@ const multiKeyStorage = {
 export const useStore = create(
   persist(
     (set, get) => ({
+      products: mockProducts,
       cart: [],
       wishlist: [],
+      orders: [],
       user: null,
       token: null,
 
@@ -148,6 +167,69 @@ export const useStore = create(
       login: (userData, token, serverCart = []) => {
         set({ user: userData, token });
         get().mergeGuestCart(serverCart);
+      },
+
+      updateProfile: (updates) =>
+        set((state) => ({
+          user: state.user ? { ...state.user, ...updates } : null,
+        })),
+
+      addOrder: (order) =>
+        set((state) => ({
+          orders: [order, ...state.orders],
+        })),
+
+      createOrder: (orderData = {}) => {
+        const { cart, user, orders, products, clearCart } = get();
+        const items = orderData.items || cart;
+        const totalAmount =
+          orderData.totalAmount ??
+          items.reduce((sum, item) => sum + (item.price || 0) * (item.qty || 1), 0);
+
+        const newOrder = {
+          _id: `ORD-${Date.now().toString().slice(-6)}`,
+          user:
+            orderData.user ||
+            (user ? { _id: user._id, name: user.name, email: user.email, role: user.role } : null),
+          items,
+          shippingAddress: orderData.shippingAddress,
+          paymentMethod: orderData.paymentMethod || 'COD',
+          totalAmount,
+          status: 'Pending',
+          createdAt: new Date().toISOString(),
+        };
+
+        const updatedProducts = products.map((p) => {
+          const ordered = items.find((item) => item._id === p._id);
+          return ordered
+            ? { ...p, stock: Math.max(0, (p.stock || 0) - (ordered.qty || 1)) }
+            : p;
+        });
+
+        set({
+          orders: [newOrder, ...orders],
+          products: updatedProducts,
+        });
+        clearCart();
+        return newOrder;
+      },
+
+      updateOrderStatus: (orderId, newStatus) =>
+        set((state) => ({
+          orders: state.orders.map((order) =>
+            order._id === orderId ? { ...order, status: newStatus } : order
+          ),
+        })),
+
+      syncOrders: () => {
+        try {
+          const saved = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+          if (Array.isArray(saved)) {
+            set({ orders: saved });
+          }
+        } catch {
+          // Ignore parse errors
+        }
       },
 
       logout: () => set({ user: null, token: null }),

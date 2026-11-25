@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Gamepad2, Search, Heart, ShoppingCart, User, LogOut, X } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
@@ -14,6 +15,15 @@ const Navbar = ({
   onNavigateHome,
 }) => {
   const { cart, wishlist, user, logout } = useStore();
+  const navigate = useNavigate();
+
+  const handleSearchKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const q = searchQuery.trim();
+      navigate(q ? `/catalog?q=${encodeURIComponent(q)}` : '/catalog');
+    }
+  };
 
   const totalCartItems = cart.reduce((sum, item) => sum + (item.qty || 1), 0);
   const totalCartAmount = cart.reduce(
@@ -52,6 +62,7 @@ const Navbar = ({
               type="text"
               value={searchQuery}
               onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
               placeholder="Tìm chuột, bàn phím HE, tai nghe, switch, cảm biến..."
               className="w-full pl-10 pr-9 py-2 bg-[#f8fafc] border border-slate-200 rounded-xl text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-2 focus:ring-blue-500/15 transition-all duration-200"
             />
@@ -71,9 +82,8 @@ const Navbar = ({
         {/* Cụm nút bên phải: Wishlist, Giỏ hàng, Đăng nhập / Tài khoản */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           {/* Nút Wishlist */}
-          <button
-            type="button"
-            onClick={onOpenWishlist}
+          <Link
+            to="/profile?tab=wishlist"
             className="relative p-2.5 rounded-xl bg-[#f8fafc] hover:bg-slate-100 border border-slate-200 text-slate-700 transition-all duration-200"
             title="Danh sách yêu thích"
           >
@@ -83,7 +93,7 @@ const Navbar = ({
                 {wishlistCount}
               </span>
             )}
-          </button>
+          </Link>
 
           {/* Nút Giỏ hàng (Badge số lượng + Tổng tiền) */}
           <button
@@ -109,16 +119,15 @@ const Navbar = ({
           {/* Nút Đăng nhập / Tài khoản */}
           {user ? (
             <div className="flex items-center gap-1.5 pl-2 pr-1.5 py-1.5 rounded-xl bg-[#f8fafc] border border-slate-200">
-              <button
-                type="button"
-                onClick={onOpenAuth}
+              <Link
+                to="/profile"
                 className="flex items-center gap-2 text-left px-1.5 py-0.5 rounded-lg hover:bg-slate-200/60 transition-all duration-200"
               >
                 <User className="w-4 h-4 text-blue-600" />
                 <span className="text-xs font-semibold text-slate-800 max-w-[100px] truncate hidden sm:inline">
                   {user.name || user.email || 'Tài khoản'}
                 </span>
-              </button>
+              </Link>
               <button
                 type="button"
                 onClick={logout}
